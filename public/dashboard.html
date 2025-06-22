@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Chat Rating Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎯 Twitch Chat Rating Dashboard</h1>
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="rating-display">
+                <div class="current-rating">
+                    <h2>Current Rating</h2>
+                    <div class="rating-value" id="currentRating">50</div>
+                    <div class="rating-bar">
+                        <div class="rating-fill" id="ratingFill"></div>
+                    </div>
+                    <div class="rating-label">
+                        <span>1</span>
+                        <span>50</span>
+                        <span>100</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Messages</h3>
+                        <div class="stat-value" id="messageCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average</h3>
+                        <div class="stat-value" id="averageRating">50</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Min</h3>
+                        <div class="stat-value" id="minRating">50</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Max</h3>
+                        <div class="stat-value" id="maxRating">50</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <!-- <h2 style="">Rating History</h2> -->
+                <canvas id="ratingChart"></canvas>
+            </div>
+
+            <div class="controls">
+                <button id="resetRatingBtn" class="btn btn-primary">Reset Page</button>
+                <button id="setNeutralBtn" class="btn btn-secondary">Set to Neutral</button>
+                <div class="rating-input">
+                    <input type="number" id="customRating" min="1" max="100" value="50" placeholder="1-100">
+                    <button id="setCustomBtn" class="btn btn-secondary">Set Rating</button>
+                </div>
+            </div>
+
+            <div class="recent-messages">
+                <h2>Recent Messages</h2>
+                <div class="messages-list" id="messagesList">
+                    <div class="no-messages">No messages yet...</div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Stream Overlay: <a href="/overlay" target="_blank">/overlay</a></p>
+            <p>API Endpoint: <code>/api/rating</code></p>
+        </footer>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html> 

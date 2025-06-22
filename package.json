@@ -1,0 +1,33 @@
+{
+  "name": "twitch-chat-rating",
+  "version": "1.0.0",
+  "description": "A Twitch plugin that monitors chat and tracks a rating variable from 1-100 with real-time graph display",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development"
+  },
+  "keywords": ["twitch", "chat", "rating", "streaming", "plugin"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "tmi.js": "^1.8.5",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "sentiment": "^5.0.2",
+    "natural": "^6.8.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "html-webpack-plugin": "^5.5.3"
+  }
+} 
