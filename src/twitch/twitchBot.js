@@ -69,7 +69,7 @@ class TwitchBot extends EventEmitter {
             
             // Log message for debugging
             if (process.env.NODE_ENV === 'development') {
-                console.log(`💬 ${tags.username}: ${message} (Rating: ${analysis.rating})`);
+                console.log(`${tags.username}: ${message} (Rating: ${analysis.rating})`);
             }
         } catch (error) {
             console.error('Error processing message:', error);

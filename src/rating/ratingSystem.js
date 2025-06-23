@@ -16,7 +16,7 @@ class RatingSystem extends EventEmitter {
         this.POSITIVE_THRESHOLD = 60;
         this.NEGATIVE_THRESHOLD = 40;
         this.RATING_STEP = 2; // Controls how much positive/negative messages push the score
-        this.PULL_TO_CENTER_FACTOR = 0.1; // Controls how much neutral messages pull to center
+        this.PULL_TO_CENTER_FACTOR = 0.0; // Controls how much neutral messages pull to center
 
         // Recent messages for display purposes
         this.recentMessages = [];
