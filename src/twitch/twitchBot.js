@@ -32,18 +32,18 @@ class TwitchBot extends EventEmitter {
 
     setupEventHandlers() {
         this.client.on('connecting', () => {
-            console.log('🔌 Connecting to Twitch...');
+            console.log('Connecting to Twitch...');
             this.emit('status', 'connecting');
         });
 
         this.client.on('connected', (addr, port) => {
-            console.log(`✅ Connected to Twitch (${addr}:${port})`);
+            console.log(`Connected to Twitch (${addr}:${port})`);
             this.isConnected = true;
             this.emit('status', 'connected', { channel: process.env.TWITCH_CHANNEL });
         });
 
         this.client.on('disconnected', (reason) => {
-            console.log(`❌ Disconnected from Twitch: ${reason}`);
+            console.log(`Disconnected from Twitch: ${reason}`);
             this.isConnected = false;
             this.emit('status', 'disconnected', reason);
         });
@@ -55,7 +55,7 @@ class TwitchBot extends EventEmitter {
         });
 
         this.client.on('error', (error) => {
-            console.error('❌ Twitch bot error:', error);
+            console.error('Twitch bot error:', error);
         });
     }
 
@@ -78,16 +78,16 @@ class TwitchBot extends EventEmitter {
 
     connect() {
         if (!process.env.TWITCH_BOT_USERNAME || !process.env.TWITCH_OAUTH_TOKEN || !process.env.TWITCH_CHANNEL) {
-            console.error('❌ Missing Twitch configuration. Please check your .env file.');
+            console.error('Missing Twitch configuration. Please check your .env file.');
             return;
         }
 
         this.client.connect()
             .then(() => {
-                console.log(`🎯 Monitoring chat in #${process.env.TWITCH_CHANNEL}`);
+                console.log(`Monitoring chat in #${process.env.TWITCH_CHANNEL}`);
             })
             .catch((error) => {
-                console.error('❌ Failed to connect to Twitch:', error);
+                console.error('Failed to connect to Twitch:', error);
                 this.emit('status', 'error', error.message);
             });
     }

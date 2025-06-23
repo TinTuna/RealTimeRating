@@ -92,9 +92,9 @@ class TwitchChatRating {
         const port = process.env.PORT || 3000;
         
         this.server.listen(port, () => {
-            console.log(`🚀 Server running on port ${port}`);
-            console.log(`📊 Rating dashboard: http://localhost:${port}`);
-            console.log(`📈 Stream overlay: http://localhost:${port}/overlay`);
+            console.log(`Server running on port ${port}`);
+            console.log(`Rating dashboard: http://localhost:${port}`);
+            console.log(`Stream overlay: http://localhost:${port}/overlay`);
         });
     }
 }
