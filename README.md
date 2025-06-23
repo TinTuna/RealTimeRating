@@ -9,7 +9,6 @@ A real-time Twitch chat monitoring system that tracks a rating variable from 1-1
 - 📈 **Live Dashboard**: Beautiful web interface with real-time charts and statistics
 - 🎥 **Stream Overlay**: Clean, minimal overlay perfect for broadcasting
 - 🔄 **WebSocket Updates**: Real-time updates via Socket.IO
-- 📱 **Responsive Design**: Works on desktop and mobile devices
 - ⚙️ **Configurable**: Easy to customize rating weights and behavior
 
 ## Quick Start
