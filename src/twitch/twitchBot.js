@@ -1,5 +1,6 @@
 const tmi = require('tmi.js');
 const MessageAnalyzer = require('../rating/messageAnalyzer');
+const TwitchAuth = require('./auth');
 const EventEmitter = require('events');
 
 class TwitchBot extends EventEmitter {
@@ -9,11 +10,32 @@ class TwitchBot extends EventEmitter {
         this.messageAnalyzer = new MessageAnalyzer();
         this.client = null;
         this.isConnected = false;
+        this.auth = new TwitchAuth();
         
-        this.setupClient();
+        // Don't setup client immediately - wait for authentication
     }
 
-    setupClient() {
+    async initialize() {
+        try {
+            console.log('Initializing Twitch bot authentication...');
+            const oauthToken = await this.auth.getAccessToken();
+            
+            // Validate the token
+            const isValid = await this.auth.validateToken(oauthToken);
+            if (!isValid) {
+                throw new Error('Invalid OAuth token');
+            }
+            
+            this.setupClient(oauthToken);
+            console.log('Twitch bot authentication successful');
+        } catch (error) {
+            console.error('Failed to initialize Twitch bot:', error.message);
+            this.emit('status', 'error', error.message);
+            throw error;
+        }
+    }
+
+    setupClient(oauthToken) {
         this.client = new tmi.Client({
             options: { debug: process.env.NODE_ENV === 'development' },
             connection: {
@@ -22,7 +44,7 @@ class TwitchBot extends EventEmitter {
             },
             identity: {
                 username: process.env.TWITCH_BOT_USERNAME,
-                password: process.env.TWITCH_OAUTH_TOKEN
+                password: oauthToken
             },
             channels: [process.env.TWITCH_CHANNEL]
         });
@@ -76,25 +98,37 @@ class TwitchBot extends EventEmitter {
         }
     }
 
-    connect() {
-        if (!process.env.TWITCH_BOT_USERNAME || !process.env.TWITCH_OAUTH_TOKEN || !process.env.TWITCH_CHANNEL) {
+    async connect() {
+        if (!process.env.TWITCH_BOT_USERNAME || !process.env.TWITCH_CHANNEL) {
             console.error('Missing Twitch configuration. Please check your .env file.');
+            console.error('Required: TWITCH_BOT_USERNAME, TWITCH_CHANNEL');
+            console.error('Optional: TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET (for automatic auth)');
             return;
         }
 
-        this.client.connect()
-            .then(() => {
-                console.log(`Monitoring chat in #${process.env.TWITCH_CHANNEL}`);
-            })
-            .catch((error) => {
-                console.error('Failed to connect to Twitch:', error);
-                this.emit('status', 'error', error.message);
-            });
+        try {
+            await this.initialize();
+            
+            this.client.connect()
+                .then(() => {
+                    console.log(`Monitoring chat in #${process.env.TWITCH_CHANNEL}`);
+                })
+                .catch((error) => {
+                    console.error('Failed to connect to Twitch:', error);
+                    this.emit('status', 'error', error.message);
+                });
+        } catch (error) {
+            console.error('Failed to initialize Twitch bot:', error.message);
+            this.emit('status', 'error', error.message);
+        }
     }
 
     disconnect() {
         if (this.client) {
             this.client.disconnect();
+        }
+        if (this.auth.authServer) {
+            this.auth.authServer.close();
         }
     }
 

@@ -84,11 +84,9 @@ class TwitchChatRating {
         this.ratingSystem.on('ratingUpdate', (data) => {
             this.io.emit('ratingUpdate', data);
         });
-
-        this.twitchBot.connect();
     }
 
-    start() {
+    async start() {
         const port = process.env.PORT || 3000;
         
         this.server.listen(port, () => {
@@ -96,6 +94,14 @@ class TwitchChatRating {
             console.log(`Rating dashboard: http://localhost:${port}`);
             console.log(`Stream overlay: http://localhost:${port}/overlay`);
         });
+
+        // Start the Twitch bot after the server is running
+        try {
+            await this.twitchBot.connect();
+        } catch (error) {
+            console.error('Failed to start Twitch bot:', error.message);
+            console.log('The web interface is still available, but chat monitoring is disabled.');
+        }
     }
 }
 
