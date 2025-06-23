@@ -1,15 +1,15 @@
 # Twitch Chat Rating Plugin
 
-A real-time Twitch chat monitoring system that tracks a rating variable from 1-100 based on chat messages and displays it as a beautiful graph for streaming.
+A real-time Twitch chat monitoring system that tracks a rating variable from 1-100 based on specific chat messages and displays it as a beautiful graph for streaming.
 
 ## Features
 
-- 🎯 **Real-time Chat Monitoring**: Connects to Twitch chat and analyzes messages in real-time
-- 📊 **Smart Rating System**: Analyzes sentiment, keywords, spam detection, and user activity
-- 📈 **Live Dashboard**: Beautiful web interface with real-time charts and statistics
-- 🎥 **Stream Overlay**: Clean, minimal overlay perfect for broadcasting
-- 🔄 **WebSocket Updates**: Real-time updates via Socket.IO
-- ⚙️ **Configurable**: Easy to customize rating weights and behavior
+- **Real-time Chat Monitoring**: Connects to Twitch chat and monitors messages in real-time
+- **Simple Rating System**: Responds only to "+2" (positive) and "-2" (negative) messages
+- **Live Dashboard**: Beautiful web interface with real-time charts and statistics
+- **Stream Overlay**: Clean, minimal overlay perfect for broadcasting
+- **WebSocket Updates**: Real-time updates via Socket.IO
+
 
 ## Quick Start
 
@@ -82,17 +82,16 @@ A real-time Twitch chat monitoring system that tracks a rating variable from 1-1
 | `PORT` | Web server port | 3000 |
 | `RATING_UPDATE_INTERVAL` | Rating update frequency (ms) | 5000 |
 | `RATING_HISTORY_SIZE` | Number of history entries to keep | 100 |
-| `SENTIMENT_WEIGHT` | Weight for sentiment analysis | 0.6 |
-| `ACTIVITY_WEIGHT` | Weight for user activity | 0.4 |
 
 ### Rating System
 
-The rating system analyzes messages based on:
+The rating system is simple and predictable:
 
-- **Sentiment Analysis** (40% weight): Uses natural language processing
-- **Keyword Analysis** (30% weight): Checks for positive/negative keywords
-- **Spam Detection** (-20% weight): Penalizes spam messages
-- **User Activity** (10% weight): Considers user badges and status
+- **"+2"** → Rating increases to 100 (maximum positive)
+- **"-2"** → Rating decreases to 1 (maximum negative)
+- **Any other message** → No effect on rating (neutral)
+
+The system starts at a neutral rating of 50 and only responds to these specific strings, making it perfect for controlled audience interaction.
 
 ## Usage
 
@@ -123,33 +122,36 @@ The overlay is designed for streaming software:
 
 ## Customization
 
-### Modifying Rating Weights
+### Modifying Rating Values
 
-Edit the weights in `src/rating/messageAnalyzer.js`:
+Edit the rating values in `src/rating/messageAnalyzer.js`:
 
 ```javascript
-const weights = {
-    sentiment: 0.4,    // Sentiment analysis weight
-    keywords: 0.3,     // Keyword analysis weight
-    spam: -0.2,        // Spam penalty weight
-    activity: 0.1      // User activity weight
-};
+analyzeSimpleRating(message) {
+    if (message.includes('+2')) {
+        return 100; // Change this to adjust positive rating
+    } else if (message.includes('-2')) {
+        return 1;   // Change this to adjust negative rating
+    } else {
+        return 50;  // Change this to adjust neutral rating
+    }
+}
 ```
 
-### Adding Custom Keywords
+### Changing Trigger Strings
 
-Add positive/negative keywords in `src/rating/messageAnalyzer.js`:
+To use different trigger strings, modify the `analyzeSimpleRating` method:
 
 ```javascript
-this.positiveKeywords = [
-    'love', 'great', 'awesome', 'amazing',
-    // Add your custom positive keywords
-];
-
-this.negativeKeywords = [
-    'hate', 'terrible', 'awful', 'worst',
-    // Add your custom negative keywords
-];
+analyzeSimpleRating(message) {
+    if (message.includes('your_positive_trigger')) {
+        return 100;
+    } else if (message.includes('your_negative_trigger')) {
+        return 1;
+    } else {
+        return 50;
+    }
+}
 ```
 
 ### Styling the Overlay
@@ -189,7 +191,7 @@ RealTimeRating/
 │   │   └── twitchBot.js      # Twitch chat bot
 │   ├── rating/
 │   │   ├── ratingSystem.js   # Rating management
-│   │   └── messageAnalyzer.js # Message analysis
+│   │   └── messageAnalyzer.js # Simple message analysis
 │   └── web/
 │       └── webServer.js      # Web server and routes
 ├── public/
@@ -217,6 +219,7 @@ RealTimeRating/
    - Check browser console for errors
    - Verify Socket.IO connection
    - Check server logs for errors
+   - Ensure messages contain exactly "+2" or "-2"
 
 3. **Overlay not showing**
    - Ensure overlay URL is correct
